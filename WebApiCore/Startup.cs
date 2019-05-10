@@ -33,6 +33,7 @@ namespace WebApiCore
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IGenreService, GenreService>();
+            services.AddScoped<IMovieService, MovieService>();
             services.AddDbContext<MovieDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("MovieDbContext")));
         }
