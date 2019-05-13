@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ApplicationCore.Services
 {
@@ -18,7 +19,7 @@ namespace ApplicationCore.Services
             _genreRepository = _unitOfWork.GenericRepository<Genre>();
         }
 
-        public bool Create(GenreDTO t)
+        public async Task<bool> Create(GenreDTO t)
         {
             var entity = new Genre
             {
@@ -27,7 +28,7 @@ namespace ApplicationCore.Services
             try
             {
                 _genreRepository.Create(entity);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveAsync();
             }
             catch (Exception e)
             {
@@ -37,14 +38,14 @@ namespace ApplicationCore.Services
             return true;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             if (id < 1)
                 return false;
             try
             {
                 _genreRepository.Delete(id);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveAsync();
             }
             catch (Exception e)
             {
@@ -54,9 +55,9 @@ namespace ApplicationCore.Services
             return true;
         }
 
-        public IEnumerable<GenreDTO> GetAll()
+        public async Task<IEnumerable<GenreDTO>> GetAll()
         {
-            var entities = _genreRepository.GetAll();
+            var entities = await _genreRepository.GetAllAsync();
             if (entities == null)
                 return null;
             var dto = from entity in entities
@@ -68,9 +69,9 @@ namespace ApplicationCore.Services
             return dto;
         }
 
-        public GenreDTO GetById(int id)
+        public async Task<GenreDTO> GetById(int id)
         {
-            var entity = _genreRepository.GetById(id);
+            var entity = await _genreRepository.GetByIdAsync(id);
             if (entity == null)
                 return null;
             var dto = new GenreDTO
@@ -81,7 +82,7 @@ namespace ApplicationCore.Services
             return dto;
         }
 
-        public bool Update(GenreDTO t)
+        public async Task<bool> Update(GenreDTO t)
         {
             var entity = new Genre
             {
@@ -91,7 +92,7 @@ namespace ApplicationCore.Services
             try
             {
                 _genreRepository.Update(entity);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveAsync();
             }
             catch (Exception e)
             {

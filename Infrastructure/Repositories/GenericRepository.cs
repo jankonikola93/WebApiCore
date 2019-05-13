@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -26,7 +27,8 @@ namespace Infrastructure.Repositories
         public void Delete(object id)
         {
             TEntity entity = _dbSet.Find(id);
-            _dbSet.Remove(entity);
+            if(entity != null)
+                _dbSet.Remove(entity);
         }
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
@@ -34,14 +36,14 @@ namespace Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<TEntity> GetAll()
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return _dbSet.AsNoTracking();
+            return await _dbSet.AsNoTracking().ToListAsync();
         }
 
-        public TEntity GetById(object id)
+        public async Task<TEntity> GetByIdAsync(object id)
         {
-            return _dbSet.Find(id);
+            return await _dbSet.FindAsync(id);
         }
 
         public void Update(TEntity entity)

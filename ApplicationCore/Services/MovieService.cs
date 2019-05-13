@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ApplicationCore.Services
 {
@@ -18,7 +19,7 @@ namespace ApplicationCore.Services
             _movieRepository = _unitOfWork.GenericRepository<Movie>();
         }
 
-        public bool Create(MovieDTO t)
+        public async Task<bool> Create(MovieDTO t)
         {
             var entity = new Movie
             {
@@ -30,7 +31,7 @@ namespace ApplicationCore.Services
             try
             {
                 _movieRepository.Create(entity);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveAsync();
             }
             catch (Exception e)
             {
@@ -40,14 +41,14 @@ namespace ApplicationCore.Services
             return true;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             if (id < 1)
                 return false;
             try
             {
                 _movieRepository.Delete(id);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveAsync();
             }
             catch (Exception e)
             {
@@ -57,9 +58,9 @@ namespace ApplicationCore.Services
             return true;
         }
 
-        public IEnumerable<MovieDTO> GetAll()
+        public async Task<IEnumerable<MovieDTO>> GetAll()
         {
-            var entities = _movieRepository.GetAll();
+            var entities = await _movieRepository.GetAllAsync();
             if (entities == null)
                 return null;
             var dto = from entity in entities
@@ -74,9 +75,9 @@ namespace ApplicationCore.Services
             return dto;
         }
 
-        public MovieDTO GetById(int id)
+        public async Task<MovieDTO> GetById(int id)
         {
-            var entity = _movieRepository.GetById(id);
+            var entity = await _movieRepository.GetByIdAsync(id);
             if (entity == null)
                 return null;
             var dto = new MovieDTO
@@ -90,7 +91,7 @@ namespace ApplicationCore.Services
             return dto;
         }
 
-        public bool Update(MovieDTO t)
+        public async Task<bool> Update(MovieDTO t)
         {
             var entity = new Movie
             {
@@ -103,7 +104,7 @@ namespace ApplicationCore.Services
             try
             {
                 _movieRepository.Update(entity);
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveAsync();
             }
             catch (Exception e)
             {

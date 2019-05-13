@@ -19,35 +19,41 @@ namespace WebApiCore.Controllers
             _genreService = genreService;
         }
         [HttpGet]
-        public IEnumerable<GenreDTO> GetAll()
+        public async Task<ActionResult<IEnumerable<GenreDTO>>> GetAll()
         {
-            return _genreService.GetAll();
+            var dto = await _genreService.GetAll();
+            if (dto == null)
+                return NotFound();
+            return Ok(dto);
         }
         [HttpGet("{id}")]
-        public GenreDTO GetById(int id)
+        public async Task<ActionResult<GenreDTO>> GetById(int id)
         {
-            return _genreService.GetById(id);
+            var dto = await _genreService.GetById(id);
+            if (dto == null)
+                return NotFound();
+            return Ok(dto);
         }
         [HttpPost]
-        public ActionResult Post(GenreDTO dto)
+        public async Task<ActionResult> Post(GenreDTO dto)
         {
-            var result = _genreService.Create(dto);
+            var result = await _genreService.Create(dto);
             if (result)
                 return Ok();
             return BadRequest();
         }
         [HttpPut]
-        public ActionResult Put(GenreDTO dto)
+        public async Task<ActionResult> Put(GenreDTO dto)
         {
-            var result = _genreService.Update(dto);
+            var result = await _genreService.Update(dto);
             if (result)
                 return Ok();
             return BadRequest();
         }
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var result = _genreService.Delete(id);
+            var result = await _genreService.Delete(id);
             if (result)
                 return Ok();
             return BadRequest();

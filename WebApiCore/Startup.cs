@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ApplicationCore.Interfaces;
 using ApplicationCore.Services;
 using Infrastructure.Data;
+using Infrastructure.Logger;
 using Infrastructure.UoW;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,7 @@ namespace WebApiCore
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IMovieService, MovieService>();
+            services.AddScoped<ILogService, LogService>();
             services.AddDbContext<MovieDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("MovieDbContext")));
         }

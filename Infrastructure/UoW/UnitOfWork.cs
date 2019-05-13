@@ -11,10 +11,12 @@ namespace Infrastructure.UoW
     public class UnitOfWork : IUnitOfWork
     {
         private readonly MovieDbContext _context;
+        private readonly ILogService _logService;
         private Dictionary<string, object> _repositories;
-        public UnitOfWork(MovieDbContext context)
+        public UnitOfWork(MovieDbContext context, ILogService logService)
         {
             _context = context;
+            _logService = logService;
         }
         public IGenericRepository<TEntity> GenericRepository<TEntity>() where TEntity : class
         {
@@ -34,14 +36,14 @@ namespace Infrastructure.UoW
             return (IGenericRepository<TEntity>)_repositories[type];
         }
 
-        public void SaveAsync()
+        public async Task SaveAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public void WriteLog(string text)
         {
-            throw new NotImplementedException();
+            _logService.WriteLog(text, "DAL_log");
         }
 
     }

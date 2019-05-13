@@ -8,7 +8,7 @@ namespace ApplicationCore.Interfaces
     public interface IUnitOfWork
     {
         IGenericRepository<TEntity> GenericRepository<TEntity>() where TEntity : class;
-        void SaveAsync();
+        Task SaveAsync();
         void WriteLog(string text);
     }
 }

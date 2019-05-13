@@ -20,35 +20,41 @@ namespace WebApiCore.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<MovieDTO> GetAll()
+        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetAll()
         {
-            return _movieService.GetAll();
+            var dto = await _movieService.GetAll();
+            if (dto == null)
+                return NotFound();
+            return Ok(dto);
         }
         [HttpGet("{id}")]
-        public MovieDTO GetById(int id)
+        public async Task<ActionResult<MovieDTO>> GetById(int id)
         {
-            return _movieService.GetById(id);
+            var dto = await _movieService.GetById(id);
+            if (dto == null)
+                return NotFound();
+            return Ok(dto);
         }
         [HttpPost]
-        public ActionResult Post(MovieDTO dto)
+        public async Task<ActionResult> Post(MovieDTO dto)
         {
-            var result = _movieService.Create(dto);
+            var result = await _movieService.Create(dto);
             if (result)
                 return Ok();
             return BadRequest();
         }
         [HttpPut]
-        public ActionResult Put(MovieDTO dto)
+        public async Task<ActionResult> Put(MovieDTO dto)
         {
-            var result = _movieService.Update(dto);
+            var result = await _movieService.Update(dto);
             if (result)
                 return Ok();
             return BadRequest();
         }
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var result = _movieService.Delete(id);
+            var result = await _movieService.Delete(id);
             if (result)
                 return Ok();
             return BadRequest();
