@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ApplicationCore.Interfaces;
 using ApplicationCore.Services;
+using IdentityServer4.AccessTokenValidation;
 using Infrastructure.Data;
 using Infrastructure.Logger;
 using Infrastructure.UoW;
@@ -36,21 +37,30 @@ namespace WebApiCore
         public void ConfigureServices(IServiceCollection services)
         {
             //add jwt
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                        .AddJwtBearer(options =>
-                            {
-                                options.TokenValidationParameters = new TokenValidationParameters
-                                {
-                                    ValidateIssuer = true,
-                                    ValidateAudience = true,
-                                    ValidateLifetime = true,
-                                    ValidateIssuerSigningKey = true,
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //            .AddJwtBearer(options =>
+            //                {
+            //                    options.TokenValidationParameters = new TokenValidationParameters
+            //                    {
+            //                        ValidateIssuer = true,
+            //                        ValidateAudience = true,
+            //                        ValidateLifetime = true,
+            //                        ValidateIssuerSigningKey = true,
+            //                        ValidIssuer = Configuration.GetValue<string>("Jwt:Issuer"),
+            //                        ValidAudience = Configuration.GetValue<string>("Jwt:Audience"),
+            //                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("Jwt:Key")))
+            //                    };
+            //                });
 
-                                    ValidIssuer = Configuration.GetValue<string>("Jwt:Issuer"),
-                                    ValidAudience = Configuration.GetValue<string>("Jwt:Audience"),
-                                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("Jwt:Key")))
-                                };
-                        });
+            //add identity server authorization
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+            .AddIdentityServerAuthentication(options =>
+            {
+                // base-address of your identityserver
+                options.Authority = Configuration.GetValue<string>("IdentityServer:Authority");
+                // name of the API resource
+                options.ApiName = Configuration.GetValue<string>("IdentityServer:ApiName");
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<MovieDbContext>(options =>
@@ -103,7 +113,7 @@ namespace WebApiCore
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Movies API V1");
             });
             app.UseAuthentication();
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseMvc();
         }
     }
